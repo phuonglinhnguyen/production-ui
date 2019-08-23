@@ -1,0 +1,46 @@
+{
+  "project_id": "5bd16a21141a890024e9a739",
+  "layout_name": "Damage",
+  "doc_id": "5be5498cb021950016f9be7a",
+  "doc_uri": "",
+  "ocr_results": [
+    {
+      "page_index": 1,
+      "field_name": "ho_ten",
+      "auto_fill": 1,
+      "highlight_color": "#F55A26",
+      "keyword_value": {
+        "text": "Họ tên",
+        "position": "759;556;947;666"
+      },
+      "ocr_values": [
+        {
+          "line_index": 7,
+          "text": " TRẤN THIÊN TOÀN",
+          "position": "759;556;1274;656",
+          "valid_status": "",
+          "note": ""
+        }
+      ]
+    },
+    {
+      "page_index": 1,
+      "field_name": "DoB",
+      "auto_fill": 1,
+      "highlight_color": "#F55A26",
+      "keyword_value": {
+        "text": "Sinh ngày",
+        "position": "762;836;1048;948"
+      },
+      "ocr_values": [
+        {
+          "line_index": 8,
+          "text": "07-10-1987",
+          "position": "762;836;1588;938",
+          "valid_status": "0",
+          "note": "Invalid checksum;"
+        }
+      ]
+    }
+  ]
+}
