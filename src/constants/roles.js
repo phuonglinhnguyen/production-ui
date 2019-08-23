@@ -1,0 +1,10 @@
+export const ROLE_ADMIN = 'Admin';
+export const ROLE_PRODUCTION_ADMIN = 'ROLE_PRODUCTION_ADMIN';
+export const ROLE_DESIGNER = 'Designer';
+export const ROLE_DPO = 'Dpo';
+export const ROLE_GUEST = 'Guest';
+export const ROLE_QC = 'Qc';
+export const ROLE_QC_LEADER = 'Qc-Leader';
+export const ROLE_PROJECT_MANAGER = 'Project-Manager';
+export const ROLE_TEAM_LEADER = 'Team-Leader';
+export const ROLE_DIGIPAY_ADMIN = 'DigiPay-Admin';

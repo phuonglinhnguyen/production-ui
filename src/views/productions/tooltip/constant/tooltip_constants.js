@@ -1,0 +1,3 @@
+export const TOOLTIP_OPEN = "TOOLTIP_OPEN";
+
+export const TOOLTIP_CLOSE = "TOOLTIP_CLOSE";

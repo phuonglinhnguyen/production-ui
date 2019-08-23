@@ -1,0 +1,122 @@
+.cool_scroll_smart::-webkit-scrollbar-track
+{
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 0 0 0 1px;
+}
+.cool_scroll_smart::-webkit-scrollbar
+{
+    /* height: 16px; */
+    overflow: visible;
+    width: 5px;
+	/* background-color: #F5F5F5; */
+}
+.cool_scroll_smart::-webkit-scrollbar-thumb
+{
+	background-color: rgba(0,0,0,.1);
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px 1px 1px 1px;
+    min-height: 28px;
+    padding: 100px 0 0;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1), inset 0 -1px 0 rgba(0,0,0,.01);
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,.1), inset 0 -1px 0 rgba(0,0,0,.01);
+}
+
+.cool_scroll_smart::-webkit-scrollbar-button
+{
+    height: 0;
+    width: 0;
+}
+
+.cool_scroll_smart::-webkit-scrollbar-corner
+{
+    background: transparent;
+}
+
+
+
+
+
+.cool_scroll_smart:hover::-webkit-scrollbar-track
+{
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 0 0 0 1px;
+}
+.cool_scroll_smart:hover::-webkit-scrollbar
+{
+    /* height: 16px; */
+    overflow: visible;
+    width: 10px;
+	background-color: #F5F5F5;
+}
+.cool_scroll_smart:hover::-webkit-scrollbar-thumb
+{
+	background-color: rgba(0,0,0,.2);
+    background-clip: padding-box;
+    border: solid transparent;
+    border-width: 1px 1px 1px 1px;
+    min-height: 28px;
+    padding: 100px 0 0;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1), inset 0 -1px 0 rgba(0,0,0,.07);
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,.1), inset 0 -1px 0 rgba(0,0,0,.07);
+}
+
+.cool_scroll_smart:hover::-webkit-scrollbar-button
+{
+    height: 0;
+    width: 0;
+}
+
+.cool_scroll_smart:hover::-webkit-scrollbar-corner
+{
+    background: transparent;
+}
+
+.special_scroll::-webkit-scrollbar {
+    height: 5px;
+    width: 5px;
+  }
+  .special_scroll::-webkit-scrollbar-thumb {
+    background-color: #6e6e6e;
+    outline: 1px solid #333;
+  }
+  
+
+  .cool_scroll,
+.thin_scroll {
+  overflow: auto;
+}
+
+.cool_scroll:hover, .cool_scroll:focus,
+.thin_scroll:hover,
+.thin_scroll:focus {
+  outline: none;
+}
+
+body::-webkit-scrollbar,
+.cool_scroll::-webkit-scrollbar,
+.dialog_body::-webkit-scrollbar,
+.column_right::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+}
+
+body::-webkit-scrollbar-thumb,
+.cool_scroll::-webkit-scrollbar-thumb,
+.dialog_body::-webkit-scrollbar-thumb,
+.column_right::-webkit-scrollbar-thumb {
+  background-color: #6e6e6e;
+  outline: 1px solid #333;
+}
+
+.thin_scroll::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.thin_scroll::-webkit-scrollbar-thumb {
+  background-color: #bdbdbd;
+  outline: 1px solid #333;
+}

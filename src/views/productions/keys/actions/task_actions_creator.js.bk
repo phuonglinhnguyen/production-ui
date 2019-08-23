@@ -1,0 +1,406 @@
+import { TaskTypes } from '../types';
+import XClient from '../../../../common/api';
+import { NotifyActions } from '../../../../common/notification';
+import {
+  getDatasKeying,
+  getRecordBySectionLastest,
+  getCompleteReason
+} from './ulti';
+import {
+  TIME_TRY_RELOAD,
+  MAX_TRY_RELOAD,
+  TIME_TRY_LOAD,
+  URL_MODULE,
+  TASK_ID,
+  TASK_DEF_KEY,
+  KEY_QUEUE_TRANSFORM
+} from '../constants';
+const fetching = () => ({ type: TaskTypes.FETCHING });
+const didInValidate = () => ({ type: TaskTypes.DID_INVALIDATION });
+const fetchReceive = (data, access, canClaim) => ({
+  type: TaskTypes.RECEIVE,
+  payload: { data, access, canClaim }
+});
+const claimDidInvalidate = data => ({
+  type: TaskTypes.CLAIM_DID_INVALIDATION,
+  payload: data
+});
+const claimReceive = data => ({ type: TaskTypes.CLAIM_RECEIVE, data });
+const completingTask = () => ({ type: TaskTypes.PATCHING });
+const completeTaskFailed = (info) => ({ type: TaskTypes.PATCH_FAILED, info });
+const saveDocSuccess = (dataKeying, dataTranform) => ({
+  type: TaskTypes.SAVE_DOC_SUCESS,
+  dataKeying,
+  dataTranform,
+});
+const saveDocFailed = () => ({ type: TaskTypes.SAVE_DOC_FAILED });
+
+export const referData = (task, layout) => dispatch => {
+  let referData;
+  try {
+    if (!task.referData) {
+      if (task.item && layout.item.refer) {
+        referData = {};
+        let refer = layout.item.refer;
+        let referSource = task.item.doc.records[0][refer.source];
+        referSource = referSource[referSource.length - 1];
+        refer.fields.forEach(field => {
+          if (referSource[field]) referData[field] = referSource[field];
+        });
+      }
+    }
+  } catch (error) { }
+  if (referData) {
+    dispatch({ type: TaskTypes.REFER_DATA, referData });
+  }
+};
+
+const isIntask = (info, task) => info.taskId === task.taskDefinitionKey;
+const canClaim = (info, task) => isIntask(info, task) && !task.endTime;
+const isAccess = (info, task) =>
+  canClaim(info, task) && task.assignee === info.userName;
+
+const getDataOfTask = async (task, info) => {
+  try {
+    let completeOptions = [];
+    let complete_option = task.variables.filter(
+      variable => 'complete_option' === variable.name
+    )[0];
+    if (complete_option && complete_option.value) {
+      completeOptions = getCompleteReason(complete_option.value);
+    }
+    let comment = task.variables.filter(
+      variable => 'comment' === variable.name
+    )[0];
+    let hold_count = task.variables.filter(
+      variable => 'hold_count' === variable.name
+    )[0];
+    let key_data = task.variables.filter(
+      variable => 'key_data' === variable.name
+    )[0];
+    let input_data = task.variables.filter(
+      variable => 'input_data' === variable.name
+    )[0];
+    let define_mask = task.variables.filter(
+      variable => 'define_mask' === variable.name
+    )[0];
+    let lastRecord = [];
+    let mask={};
+    let dataAutoSave = await XClient.recent_data.get_resent_data(info.userName)
+    if (!dataAutoSave.error) {
+      if (task.id === dataAutoSave.payload.task_id) {
+        lastRecord = dataAutoSave.payload.data || [];
+      }
+    }
+    if (lastRecord.length === 0) {
+      if (key_data.value) {
+        let _dataValue = key_data.value.pop();
+        if (_dataValue) {
+          lastRecord = getRecordBySectionLastest(
+            _dataValue.records,
+            info.sectionName,
+            info.userName
+          );
+        }
+      }
+    }
+    if(define_mask){
+      mask= define_mask.value;
+    }
+    let _holdCount = (hold_count && hold_count.value) ? parseInt(hold_count.value,10) : 0;
+    return {
+      records: lastRecord,
+      doc: input_data.value,
+      task: {
+        ...task,
+        mask,
+        comment_text: comment ? comment.value : '',
+        is_hold: !!comment && comment.value,
+        hold_count: _holdCount
+      },
+      complete_option: completeOptions
+    };
+  } catch (e) {
+    return { records: [] };
+  }
+};
+export const claimNextTask = (info, task) => async (dispatch, getState) => {
+  try {
+    if (!task.isFetching) {
+      dispatch(fetching());
+      let _res = await XClient.task.claim_next('start_' + info.projectId, info.taskId, info.userName);
+      if (_res.error) {
+        dispatch(NotifyActions.info('', 'productions.keying.message.info.no_task', { i18: !0 }));
+        dispatch(claimDidInvalidate(_res.payload));
+        let redirectUrl = `/productions/${URL_MODULE}/${info.projectId}/${info.layoutName}/${info.sectionName}/${info.taskId}`;
+        info.history.push(redirectUrl);
+      } else {
+        let _task = _res.payload;
+        let _datas = await getDataOfTask(_task, info);
+        dispatch(claimReceive(_datas));
+        let redirectUrl = `/productions/${URL_MODULE}/${info.projectId}/${info.layoutName}/${info.sectionName}/${info.taskId}/${_task.id}`;
+        info.history.push(redirectUrl);
+      }
+    }
+  } catch (e) {
+    dispatch(NotifyActions.info('', 'productions.keying.message.info.no_task', { i18: !0 }));
+    dispatch(claimDidInvalidate({}));
+  }
+};
+
+export const claimTask = (info, task) => async (dispatch, getState) => {
+  try {
+    if (!task.isFetching) {
+      dispatch(fetching());
+      let _res = await XClient.task.claim(info.taskInstanceId, info.userName);
+      if (_res.error) {
+        dispatch(claimDidInvalidate(_res.payload));
+        dispatch(NotifyActions.error('', 'productions.keying.message.error.cant_claim_task', { i18: !0 }));
+      } else {
+        let _datas = await getDataOfTask(_res.payload, info);
+        dispatch(claimReceive(_datas));
+      }
+    }
+  } catch (error) { }
+};
+const fetchTask = (info, didInvali) => async dispatch => {
+  let _res = await XClient.task.get(info.taskInstanceId);
+  if (_res.error) {
+    dispatch(didInValidate(_res.payload));
+    didInvali === MAX_TRY_RELOAD - 1 &&
+      dispatch(
+        NotifyActions.error('', 'productions.keying.message.error.cant_get_task', { i18: !0 }));
+  } else {
+    let _task = _res.payload;
+    let _datas = await getDataOfTask(_task, info);
+    dispatch(fetchReceive(_datas,isAccess(info, _datas.task),canClaim(info, _datas.task)));
+  }
+};
+
+const shouldFetch = (info, task) => {
+  return (
+    (!task.item || task.item.task.id !== info.taskInstanceId) &&
+    !task.isFetching && task.didInvalidate < MAX_TRY_RELOAD
+  );
+};
+const fetchIfNeeded = (info, task) => async (dispatch, getState) => {
+  let isShouldFetch = shouldFetch(info, task);
+  if (isShouldFetch) {
+    dispatch(fetching());
+    let _fetchTask = fetchTask(info, task.didInvalidate);
+    if (task.didInvalidate > 0) {
+      setTimeout(() => {
+        dispatch(_fetchTask);
+      }, TIME_TRY_RELOAD[task.didInvalidate] || TIME_TRY_LOAD);
+    } else {
+      dispatch(_fetchTask);
+    }
+  }
+};
+
+const getDataOfRecords = data => {
+  data.records.forEach(item => {
+    delete item.keyed_data.keyer;
+    delete item.keyed_data.section;
+    delete item.keyed_data.source;
+    delete item.keyed_data.ip;
+    delete item.keyed_data.reason;
+    delete item.keyed_data[TASK_ID];
+    delete item.keyed_data[TASK_DEF_KEY];
+  })
+  return data
+}
+const completeTask = (info, task, isNext, dataKeying, reason, is_define_mask) => async (dispatch) => {
+  let inputBody = {};
+  if (reason) {
+    let comment_text = task.item.task.comment_text && task.item.task.comment_text.length ? task.item.task.comment_text + '#EOL#' : '';
+    comment_text = comment_text + info.userName + ':' + reason.comment_text || ''
+    inputBody[`${task.item.task.taskDefinitionKey}_output_data`] = {
+      value:
+        {
+          "comment": comment_text,
+          "complete_reason": reason.value,
+          "completed": "false",
+          "key_datas": [getDataOfRecords(dataKeying)],
+          "define_mask":is_define_mask?{...task.mask, record_input:task.records.map(record=>{return!Object.keys(record).every(key=>{return record[key].trim().length === 0});})}:undefined,
+          "user": info.userName,
+          hold_count: task.item.task.hold_count + 1,
+        }
+    };
+  } else {
+    inputBody[`${task.item.task.taskDefinitionKey}_output_data`] = {
+      value:
+        {
+          "comment": task.item.task.comment_text || '',
+          "complete_reason": "",
+          "completed": "true",
+          "key_datas": [getDataOfRecords(dataKeying)],
+          "define_mask":is_define_mask?{...task.mask, record_input:task.records.map(record=>{return!Object.keys(record).every(key=>{return record[key].trim().length === 0});})}:undefined,
+          "user": info.userName,
+          hold_count: task.item.task.hold_count,
+        }
+    };
+  }
+  let _res = await XClient.task.complete(task.item.task.id, inputBody);
+  if (_res.error) {
+    dispatch(
+      NotifyActions.error(
+        '',
+        'productions.keying.message.error.complete_task_failed',
+        { i18: !0 }
+      )
+    );
+    dispatch(completeTaskFailed({ taskId: task.item.task.id, isNext, info, inputBody }));
+  } else {
+    dispatch(
+      NotifyActions.success(
+        '',
+        'productions.keying.message.success.save_success',
+        { i18: !0 }
+      )
+    );
+    if (isNext) {
+      dispatch(claimNextTask(info, task));
+    } else {
+      info.history.push(
+        `/productions/${URL_MODULE}/${info.projectId}/${info.layoutName}/${
+        info.sectionName
+        }/${info.taskId}`
+      );
+    }
+  }
+};
+export const retryCompleteTask = () =>
+  async (dispatch, getState) => {
+    let task = getState().keyings.task
+    let task_complete_data = task.task_complete_data;
+    let info = task_complete_data.info;
+    try {
+      dispatch(completingTask());
+      let _res = await XClient.task.complete(task_complete_data.taskId, task_complete_data.inputBody);
+      if (_res.error) {
+        dispatch(
+          NotifyActions.error(
+            '',
+            'productions.keying.message.error.complete_task_failed',
+            { i18: !0 }
+          )
+        );
+        dispatch(completeTaskFailed(task_complete_data));
+      } else {
+
+        dispatch(
+          NotifyActions.success(
+            '',
+            'productions.keying.message.success.save_success',
+            { i18: !0 }
+          )
+        );
+        if (task_complete_data.isNext) {
+          dispatch(claimNextTask(task_complete_data.info, task));
+        } else {
+          info.history.push(
+            `/productions/${URL_MODULE}/${info.projectId}/${info.layoutName}/${
+            info.sectionName
+            }/${info.taskId}`
+          );
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      dispatch(
+        NotifyActions.error(
+          '',
+          'productions.keying.message.error.complete_task_failed',
+          { i18: !0 }
+        )
+      );
+      dispatch(completeTaskFailed(task_complete_data));
+    }
+  }
+
+export const saveDocument = (info, task, isNext, layout, reason, getValueTranforms) => async (dispatch, getState) => {
+  let location = '';
+  let is_define_mask = false;
+  try{
+    location = getState().current_user.user.ip || ''
+    is_define_mask = layout.item.section.settings.multiple.mask==='define_mask'
+  } catch (error) {
+    console.log(error);
+    
+  }
+  try {
+    if (!task.isPatching) {
+      dispatch(completingTask());
+      let dataTranform;
+      let dataTranformInput = getValueTranforms();
+      if (dataTranformInput) {
+        dataTranform = getDatasKeying(dataTranformInput, info.sectionName, layout.item.fields, info.userName, task.item.task, KEY_QUEUE_TRANSFORM, location, reason);
+      }
+      let dataKeying = getDatasKeying(task.records, info.sectionName, layout.item.fields, info.userName, task.item.task, null, location, reason);
+      let _res = await XClient.document.add_records_keyed_data(info.projectId, task.item.doc.id, [dataKeying, dataTranform]);
+      // let _resTransForm = await XClient.document.add_records_keyed_data(info.projectId, task.item.doc.id, dataTranform);
+      if (_res.error) {
+        dispatch(NotifyActions.error('', 'productions.keying.message.error.save_document_failed', { i18: !0 }));
+        dispatch(saveDocFailed());
+      } else {
+        dispatch(saveDocSuccess(_res.payload, dataTranform));
+        dispatch(completeTask(info, task, isNext, dataTranform, reason,is_define_mask));
+      }
+    }
+  } catch (error) {
+    dispatch(
+      NotifyActions.error(
+        '',
+        'productions.keying.message.error.save_document_failed',
+        { i18: !0 }
+      )
+    );
+    dispatch(saveDocFailed());
+  }
+};
+export const changeField = (fieldName, value) => ({
+  type: TaskTypes.CHANGE_FIELD,
+  fieldName,
+  value
+});
+export const resetTask = () => ({ type: TaskTypes.RESET });
+export const initRecords = num => ({ type: TaskTypes.INIT_RECORD, num });
+export const selectRecord = index => ({ type: TaskTypes.SELECT_RECORD, index });
+export const setDataRecord = (indexRecord) => (dispatch, getState) => {
+  dispatch({
+    type: TaskTypes.UPDATE_RECORD,
+    indexRecord
+  })
+  let task = getState().keyings.task;
+  XClient.recent_data.set_resent_data(task.item.task.assignee, task.item.task.id, task.recordsCheckedData)
+};
+
+export const setNextRecordWaiting = (indexNext) => ({ type: TaskTypes.NEXT_RECORD_WAITING, indexNext })
+
+export const switchRecord = (index, isUp) => ({ type: TaskTypes.SWITCHING_RECORD, index, isUp })
+export const insertRecord = (index) => ({ type: TaskTypes.INSERT_RECORD, index });
+export const removeRecord = (index) => ({ type: TaskTypes.REMOVE_RECORD, index });
+export const insertingRecord = (index) => ({ type: TaskTypes.INSERTING_RECORD, index });
+export const removingRecord = (index) => ({ type: TaskTypes.REMOVING_RECORD, index });
+export const onChangeMask = (name , value) => ({ type: TaskTypes.CHANGE_MASK, name, value});
+
+export default {onChangeMask,
+  insertRecord,
+  removeRecord,
+  insertingRecord,
+  removingRecord,
+  switchRecord,
+  retryCompleteTask,
+  setNextRecordWaiting,
+  setDataRecord,
+  resetTask,
+  claimNextTask,
+  claimTask,
+  fetchIfNeeded,
+  changeField,
+  saveDocument,
+  referData,
+  initRecords,
+  selectRecord
+};

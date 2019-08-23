@@ -1,0 +1,11 @@
+export const ROUTE_PROJECTS = 'projects';
+export const ROUTE_CONFIGURATION = 'configurations';
+export const ROUTE_GROUPS = 'groups';
+export const ROUTE_PRODUCTION = 'productions';
+export const ROUTE_PRODUCTION_ADMIN = 'production-admin';
+export const ROUTE_OCR_TESTING = 'ocr-testing';
+export const ROUTE_SYSTEM = 'system';
+export const ROUTE_REPORT = 'report';
+export const ROUTE_DIGIPAY = 'digipay';
+export const ROUTE_HOME = 'home';
+export const ROUTE_TRAINING = 'training';

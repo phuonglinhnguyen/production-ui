@@ -1,0 +1,14 @@
+#root {
+  section[role="main"].project {
+    .two_column {
+      height: calc(100vh - 114px);
+    }
+  }
+  section[role="main"].project.expand {
+    padding: 1px 1px 1px 1px;
+    height: calc(100vh - 2px);
+    width: calc(100% - 2px);
+    z-index: 1000;
+    position: absolute;
+  }
+}

@@ -1,0 +1,113 @@
+.report {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .block {
+    flex: 0 0 700px;
+    display: flex;
+    flex-direction: column;
+    margin: 10px 5px 10px 10px;
+    background-color: $color-white;
+
+    .title {
+      color: $color-text;
+      flex: 0 0 40px;
+      padding: 5px 15px 15px 15px;
+      display: inline-block;
+
+      div {
+        display: inline-block;
+
+        button {
+          height: 30px !important;
+          padding: 0px !important;
+          top: 5px;
+
+          svg {
+            color: $color-primary !important;
+          }
+        }
+      }
+    }
+
+    .cards {
+      flex: 0 0 75px;
+      display: flex;
+
+      .card {
+        flex: 0 0 380px;
+        display: flex;
+        margin: 10px;
+        border-radius: 4px;
+
+        &.blue {
+          background-color: #03a9f4;
+        }
+        &.violet {
+          background-color: #673ab7;
+        }
+        &.gray {
+          background-color: #607d8b;
+        }
+        &.green {
+          background-color: #4caf50;
+        }
+        &.red {
+          background-color: #f54134;
+        }
+        &.orange {
+          background-color: #fb9900;
+        }
+
+        .icon {
+          flex: 0 0 25%;
+          text-align: center;
+          padding-top: 10px;
+
+          .fa {
+            color: $color-white;
+          }
+        }
+        .number {
+          flex: 1;
+          padding-top: 5px;
+          color: $color-white;
+
+          .data {
+            text-align: left;
+            font-size: 25px;
+            font-weight: 700;
+          }
+          .label {
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+    .filter {
+      flex: 0 0 90px;
+      display: flex;
+
+      .element {
+        margin: 10px;
+      }
+    }
+
+    .table {
+      flex: 1;
+      position: relative;
+
+      .content {
+        overflow: auto;
+        width: calc(100% - 22px);
+        height: calc(100% - 12px);
+        margin-left: 10px;
+        border: 1px solid #e0e0e0;
+        position: absolute;
+      }
+    }
+  }
+}

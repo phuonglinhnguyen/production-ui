@@ -1,0 +1,23 @@
+{
+  "API_ENDPOINT": "/api",
+  "REPORT_ENDPOINT": "/report-api",
+  "UAC_ENDPOINT": "/api/oauth/access-controls",
+  "OAUTH_ENDPOINT": "/oauth",
+  "BPMN_ENDPOINT": "http://localhost:3000/api/bpmn",
+  "API_LOOKUP": "http://lookups.digi-texx.vn/lookups",
+  "API_OMR": "http://sit.omr.x.digi-texx.vn",
+  "API_OCR": "https://elrond.digi-texx.vn",
+  "API_SOCKET": "/",
+  "REGISTER_PAGE": true,
+  "SOCKET": {
+    "ENDPOINT": "https://sit-apollo.digi-texx.vn",
+    "KEEPALIVE_MINUTES": "10",
+    "TIMEOUT_MINUTES": "15",
+    "RECONNECT_DELAY": "10",
+    "RECONNECT_DELAY_MAX": "20"
+  },
+  "QC_NUMBER_TASK_CLAIM": "5",
+  "ELROND_ENV": "SIT",
+  "HOTLINES": "[{\"group_name\":\"HR Support (Contract + Salary)\",\"email\":\"hr@digi-texx.vn\",\"hotline\":\"0902518218\"},{\"group_name\":\"Project Support\",\"email\":\"001_Question@digi-texx.vn\",\"hotline\":\"+84 28 3715 5325 | Ext: 635\",\"hotline_2\":\"0908315474 | 0908303684\"},{\"group_name\":\"Technical Support (Log in)\",\"email\":\"001_Question@digi-texx.vn\"}]",
+  "JIVO_ID": "1Uca3pkZMm"
+}

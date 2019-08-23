@@ -1,0 +1,48 @@
+.pay_slip {
+  .page {
+    width: 800px;
+    height: 1050px;
+    margin: 35px 35px;
+
+    .title {
+      font-size: 35px;
+      text-align: center;
+      padding-top: 35px;
+    }
+
+    .filter {
+      display: flex;
+      justify-content: space-evenly;
+      padding: 20px;
+    }
+
+    .content {
+      .field {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+
+        .bold {
+          font-weight: 500;
+        }
+        .label {
+          color: $color-text;
+        }
+
+        &.total {
+          .label, .number {
+            color: $color-accent;
+            font-weight: 500;
+          }
+        }
+
+        &.balance {
+          .label, .number {
+            color: $color-primary;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+@mixin color-picker($color) {
+  height: 25px;
+  width: 25px;
+  border-radius: 4px;
+  background: $color;
+  text-align: center;
+  color: #ffffff;
+  font: normal normal normal 23px/1 FontAwesome !important;
+}
+
+.color-picker {
+  display: flex;
+
+  > div {
+    margin-right: 20px;
+  }
+}
+
+.color-picker-error {
+  @include color-picker($color-error);
+}
+
+.color-picker-warning {
+  @include color-picker($color-warning);
+}
+
+.color-picker-notice {
+  @include color-picker($color-notice);
+}
+
+.color-picker-notice::after {
+  background: red;
+  content: " ";
+}

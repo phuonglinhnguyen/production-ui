@@ -1,0 +1,319 @@
+// Screen size variables
+$screen-xs-min: 425px; // Tiny phones
+$screen-sm-min: 576px; // Small tablets and large smartphones (landscape view)
+$screen-md-min: 768px; // Small tablets (portrait view)
+$screen-lg-min: 992px; // Tablets and small desktops
+$screen-xl-min: 1300px; // Large tablets and desktops
+
+// Small devices
+@mixin smw {
+  @media (min-width: #{$screen-sm-min}) {
+    @content;
+  }
+}
+
+// Medium devices
+@mixin mdw {
+  @media screen and (min-width: #{$screen-md-min}) {
+    @content;
+  }
+}
+
+// Large devices
+@mixin lgw {
+  @media screen and (min-width: #{$screen-lg-min}) {
+    @content;
+  }
+}
+
+@mixin lgw-mh {
+  @media screen and (min-width: #{$screen-lg-min}) and (min-height: 600px) and (max-height: 799px) {
+    @content;
+  }
+}
+
+@mixin lgw-lh {
+  @media screen and (min-width: #{$screen-lg-min}) and (min-height: 800px) {
+    @content;
+  }
+}
+
+// Extra large devices
+@mixin xlw-mh {
+  @media screen and (min-width: #{$screen-xl-min}) and (min-height: 600px) {
+    @content;
+  }
+}
+
+// Extra large devices
+@mixin xlw-lh {
+  @media screen and (min-width: #{$screen-xl-min}) and (min-height: 800px) {
+    @content;
+  }
+}
+
+.login {
+  display: flex;
+  height: 100vh;
+  background: url("./styles/images/smile.jpeg") no-repeat center center;
+  background-size: cover;
+
+  .login-notice {
+    flex: 1;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.48);
+
+    .hire {
+      flex: 1;
+      display: flex;
+
+      .body {
+        display: flex;
+        width: 320px;
+        height: 64px;
+        margin: auto;
+
+        .note {
+          color: $color-text;
+          background-color: #ffffff;
+          position: relative;
+          border-radius: 4px;
+          text-align-last: center;
+          margin-right: 35px;
+          box-shadow: 0 0 9px #ffffff;
+          flex: 0 0 190px;
+          font-size: 14px;
+          padding: 16px;
+
+          &::before {
+            content: "";
+            width: 0;
+            height: 0;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+            border-left: 10px solid #ffffff;
+            position: absolute;
+            right: -10px;
+            bottom: 25px;
+          }
+        }
+      }
+
+      .smile {
+        background: #00bcd4
+          url("./styles/images/smiling-emoticon-square-face.png") no-repeat
+          center center;
+        height: 64px;
+        width: 64px;
+        background-size: 36px 33px;
+        cursor: pointer;
+        border-radius: 6px;
+        position: relative;
+
+        &:hover {
+          background: #00bcd4 url("./styles/images/happy-emoticon-smiling-square.png")
+            no-repeat center center;
+          box-shadow: 0 0px 16px 5px rgba(255, 255, 255, 0.59);
+          background-size: 46px 46px;
+        }
+      }
+    }
+
+    .support {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0.65)
+      );
+      line-height: 25px;
+      flex: 0 0 120px;
+      display: flex;
+      padding: 30px;
+
+      .information {
+        flex: 1;
+
+        div {
+          color: $color-white;
+
+          @include smw {
+            font-size: 9px;
+          }
+
+          @include mdw {
+            font-size: 10px;
+          }
+
+          @include lgw {
+            font-size: 13px;
+          }
+
+          @include xlw-mh {
+            font-size: 13px;
+          }
+
+          @include xlw-lh {
+            font-size: 16px;
+          }
+        }
+
+        .content {
+          font-weight: 300;
+        }
+
+        .group {
+          display: "inline";
+          color: $color-white;
+          font-size: 16px;
+          opacity: 0.8;
+
+          @include smw {
+            font-size: 9px;
+          }
+
+          @include mdw {
+            font-size: 10px;
+          }
+
+          @include lgw {
+            font-size: 12px;
+          }
+
+          @include xlw-mh {
+            font-size: 13px;
+          }
+
+          @include xlw-lh {
+            font-size: 16px;
+          }
+        }
+
+        .icon {
+          padding-right: 10px;
+        }
+      }
+    }
+  }
+
+  .login-main {
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.78),
+      rgba(0, 0, 0, 0.51)
+    );
+    display: flex;
+    flex-direction: column;
+
+    @include smw {
+      flex: 0 0 30%;
+    }
+
+    @include mdw {
+      flex: 0 0 30%;
+    }
+
+    @include lgw {
+      flex: 0 0 30%;
+    }
+
+    @include xlw-mh {
+      flex: 0 0 30%;
+    }
+
+    @include xlw-lh {
+      flex: 0 0 30%;
+    }
+
+    .card {
+      width: 80%;
+      margin: auto;
+    }
+
+    .title {
+      text-align: center;
+      color: $color-white;
+      font-size: 35px;
+      margin-bottom: 25px;
+    }
+
+    .login-body {
+      .div-error {
+        word-break: break-word;
+        font-size: 20px;
+        padding: 10px;
+        color: $color-white;
+        background: linear-gradient(
+          to right,
+          rgba(243, 243, 25, 0.5),
+          rgba(236, 245, 37, 0.29)
+        );
+      }
+
+      .div-input {
+        height: 85px;
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          transition: background-color 5000s ease-in-out 0.1s,
+            color 5000s ease-in-out 0.2s;
+          transition-delay: background-color 5000s, color 5000s;
+        }
+      }
+
+      .register {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.login-dialog {
+  .logos {
+    display: flex;
+    justify-content: space-evenly;
+
+    .logo {
+      width: 100px;
+      height: 110px;
+      text-align: center;
+      cursor: pointer;
+
+      .icon-google {
+        background: url("./styles/images/google.png") no-repeat center center;
+        height: 80px;
+        width: 80px;
+        background-size: 100%;
+        margin: auto;
+      }
+
+      .icon-facebook {
+        background: url("./styles/images/facebook.png") no-repeat center center;
+        height: 80px;
+        width: 80px;
+        margin: auto;
+        background-size: 100%;
+      }
+
+      .label {
+        margin-top: 10px;
+      }
+    }
+  }
+
+  .hotline {
+    font-weight: 500;
+    color: $color-accent;
+  }
+}
+
+.version {
+  position: fixed;
+  color: $color-white;
+  bottom: 10px;
+  right: 10px;
+}

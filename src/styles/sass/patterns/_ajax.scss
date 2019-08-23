@@ -1,0 +1,15 @@
+.ajax-circle{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+section[role="main"].with-tabs .ajax-circle{
+    height: calc(100vh - 114px);
+    width: 100%;
+}
+section[role="main"].without-tabs .ajax-circle{
+    height: calc(100vh - 66px);
+    width: 100%;
+}

@@ -1,0 +1,15 @@
+export const ANNOUNCEMENT = 'announcement';
+export const KEYING_TASK = 'keying_task'
+export const GROUP = 'group'
+export const PROJECT_FUNCTIONS = 'project_functions';
+export const PROJECTS_TASKS_ASSIGINED = 'projects_tasks_assigned';
+export const USER = 'user'
+export const USERS = 'users';
+export const USER_TASKS = 'user_tasks';
+export const USER_ROLE_MANAGEMENT = 'user_role_management';
+export const PROJECT = 'project'
+export const SECTION = 'section'
+export const TASK = 'task';
+export const TASK_INFO = 'task_info'
+export const REMAIN_DOCUMENT = 'remain_document';
+export const REMAIN_HUMAN_TASK = 'remain_human_task';

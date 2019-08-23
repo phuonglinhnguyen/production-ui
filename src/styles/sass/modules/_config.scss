@@ -1,0 +1,23 @@
+#root {
+  section[role="main"].config {
+    .two_column {
+      .column_left {
+        .data_content {
+          overflow: auto;
+          width: 100%;
+          height: calc(100vh - 168px);
+        }
+
+        .data_content::-webkit-scrollbar { 
+          height: 5px;
+          width: 5px;
+        }
+        .data_content::-webkit-scrollbar-thumb {
+          background-color: #6e6e6e;
+          outline: 1px solid #333;
+        }
+      }
+    }
+  }
+}
+ 
